@@ -1,6 +1,29 @@
 // Import necessary data from data.js
 import { books, authors, genres, BOOKS_PER_PAGE } from "./data.js";
 
+// Define BookPreview Web Component
+class BookPreview extends HTMLElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    const { author, id, image, title } = this.dataset;
+
+    this.innerHTML = `
+      <button class="preview" data-preview="${id}">
+        <img class="preview__image" src="${image}" />
+        <div class="preview__info">
+          <h3 class="preview__title">${title}</h3>
+          <div class="preview__author">${authors[author]}</div>
+        </div>
+      </button>
+    `;
+  }
+}
+
+customElements.define("book-preview", BookPreview);
+
 // Global state object to maintain the current state
 const state = {
   page: 1,
@@ -14,18 +37,11 @@ const state = {
 
 // Function to create book preview element
 const createBookPreview = ({ author, id, image, title }) => {
-  const element = document.createElement("button");
-  element.classList.add("preview");
-  element.setAttribute("data-preview", id);
-
-  element.innerHTML = `
-    <img class="preview__image" src="${image}" />
-    <div class="preview__info">
-      <h3 class="preview__title">${title}</h3>
-      <div class="preview__author">${authors[author]}</div>
-    </div>
-  `;
-
+  const element = document.createElement("book-preview");
+  element.dataset.author = author;
+  element.dataset.id = id;
+  element.dataset.image = image;
+  element.dataset.title = title;
   return element;
 };
 
